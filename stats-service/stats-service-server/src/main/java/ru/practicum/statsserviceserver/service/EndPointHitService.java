@@ -1,6 +1,5 @@
 package ru.practicum.statsserviceserver.service;
 
-import org.springframework.stereotype.Service;
 import ru.practicum.dto.*;
 
 import java.time.LocalDateTime;
