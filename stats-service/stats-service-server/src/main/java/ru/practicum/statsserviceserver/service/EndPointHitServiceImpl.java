@@ -10,6 +10,8 @@ import ru.practicum.statsserviceserver.model.*;
 import ru.practicum.statsserviceserver.repository.EndPointHitRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,16 +30,16 @@ public class EndPointHitServiceImpl implements EndPointHitService {
     }
 
     @Override
-    public ViewStatsDto get(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
+    public List<ViewStatsDto> get(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
         if (start.isAfter(end)) {
             throw new ValidationException("нижняя граница времени позже верхней");
         }
-        ViewStats viewStats;
+        List<ViewStats> viewStats;
         if (!unique) {
             viewStats = repository.findAllByParameters(start, end, uris, ViewStats.class);
         } else {
             viewStats = repository.findAllUniqueIpByParameters(start, end, uris, ViewStats.class);
         }
-        return viewStatsMapper.toViewStatsDto(viewStats);
+        return viewStats.stream().map(viewStatsMapper::toViewStatsDto).collect(Collectors.toList());
     }
 }

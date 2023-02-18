@@ -9,6 +9,7 @@ import ru.practicum.statsserviceserver.service.EndPointHitService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,11 +24,10 @@ public class ServerController {
     }
 
     @GetMapping("/stats")
-    public ViewStatsDto get(HttpServletRequest request, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
-                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
-                                            @RequestParam String[] uris,
-                                            @RequestParam boolean unique) {
-        String t = request.getQueryString();
+    public List<ViewStatsDto> get(HttpServletRequest request, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+                                  @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+                                  @RequestParam String[] uris,
+                                  @RequestParam (defaultValue = "false") boolean unique) {
         return endPointHitService.get(start, end, uris, unique);
     }
 }
