@@ -214,7 +214,7 @@
 		</module>
 		<module name="JavadocMethod">
 			<property name="severity" value="ignore"/>
-			<property name="allowedAnnotations" value="Override, Test"/>
+			<property name="allowedAnnotations" value="Override, ru.practicum.dto.Test"/>
 			<property name="allowMissingParamTags" value="true"/>
 			<property name="allowMissingReturnTag" value="true"/>
 			<metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>

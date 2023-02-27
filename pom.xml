@@ -23,33 +23,9 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>ru.practicum</groupId>
-				<artifactId>stats-service-client</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>ru.practicum</groupId>
-				<artifactId>dto</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>ru.practicum</groupId>
-				<artifactId>stats-service-server</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>ru.practicum</groupId>
-				<artifactId>main-service</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<build>
 		<pluginManagement>
@@ -61,6 +37,27 @@
 						<systemPropertyVariables>
 							<spring.profiles.active>test</spring.profiles.active>
 						</systemPropertyVariables>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.5.1</version>
+					<configuration>
+						<source>11</source>
+						<target>11</target>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>${lombok.version}</version>
+							</path>
+							<path>
+								<groupId>org.mapstruct</groupId>
+								<artifactId>mapstruct-processor</artifactId>
+								<version>${org.mapstruct.version}</version>
+							</path>
+						</annotationProcessorPaths>
 					</configuration>
 				</plugin>
 				<plugin>
