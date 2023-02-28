@@ -1,6 +1,8 @@
 package ru.practicum.statsserviceserver.service;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
 import ru.practicum.dto.*;
@@ -24,9 +26,10 @@ public class EndPointHitServiceImpl implements EndPointHitService {
 
     @Transactional
     @Override
-    public void post(EndPointHitDto endPointHitDto) {
+    public ResponseEntity<Object> post(EndPointHitDto endPointHitDto) {
         EndPointHit endPointHit = endPointHitMapper.toEndPointHit(endPointHitDto);
         repository.save(endPointHit);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override

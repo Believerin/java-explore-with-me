@@ -2,6 +2,7 @@ package ru.practicum.statsserviceserver.controller;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.*;
 import ru.practicum.statsserviceserver.service.EndPointHitService;
@@ -19,8 +20,8 @@ public class ServerController {
     private final EndPointHitService endPointHitService;
 
     @PostMapping("/hit")
-    public void post(@RequestBody @Valid EndPointHitDto endPointHitDto) {
-        endPointHitService.post(endPointHitDto);
+    public ResponseEntity<Object> post(@RequestBody @Valid EndPointHitDto endPointHitDto) {
+        return endPointHitService.post(endPointHitDto);
     }
 
     @GetMapping("/stats")
