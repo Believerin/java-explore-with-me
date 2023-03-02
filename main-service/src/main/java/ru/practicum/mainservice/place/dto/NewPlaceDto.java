@@ -1,15 +1,17 @@
-package ru.practicum.mainservice.event.model;
+package ru.practicum.mainservice.place.dto;
 
 import lombok.*;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LocationId implements Serializable {
+@ToString
+public class NewPlaceDto {
     private BigDecimal lat;
     private BigDecimal lon;
+    private float radius;
 }

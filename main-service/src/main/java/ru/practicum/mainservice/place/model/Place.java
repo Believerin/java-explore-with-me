@@ -1,4 +1,4 @@
-package ru.practicum.mainservice.event.model;
+package ru.practicum.mainservice.place.model;
 
 import lombok.*;
 
@@ -9,16 +9,17 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @EqualsAndHashCode
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "locations", schema = "public")
-@IdClass(LocationId.class)
-public class Location {
+@Table(name = "places", schema = "public")
+public class Place {
     @EqualsAndHashCode.Exclude
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private BigDecimal lat;
-    @Id
     private BigDecimal lon;
+    private float radius;
 }
