@@ -1,0 +1,558 @@
+{
+	"info": {
+		"_postman_id": "e75e3feb-d238-4f8a-8e21-e7faa39e9bb7",
+		"name": "Test Explore With Me - Feature",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Добавление новой локации",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {\r",
+							"    pm.response.to.have.status(201);  \r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const body = pm.response.json();\r",
+							"const source = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.test(\"Локация должна содержать поля: id, lat, lon, radius\", function () {\r",
+							"    pm.expect(body).to.have.property('id');\r",
+							"    pm.expect(body).to.have.property('lat');\r",
+							"    pm.expect(body).to.have.property('lon');\r",
+							"    pm.expect(body).to.have.property('radius');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
+							"    pm.expect(body.id).to.not.be.null;\r",
+							"    pm.expect(body.lat).equal(source.lat);\r",
+							"    pm.expect(body.lon).equal(source.lon);\r",
+							"    pm.expect(body.radius).equal(source.radius);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"lat\": 54.621182,\r\n    \"lon\": 39.703190,\r\n    \"radius\": 8\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/admin/places",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"places"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получение списка определённых локаций",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+							"    pm.response.to.have.status(200);  \r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const body = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Ответ должен быть массивом длиной 1\", function () {\r",
+							"    pm.expect(body).to.be.an('array');\r",
+							"    pm.expect(body.id).to.not.be.null;\r",
+							"    pm.expect(body[0].lat, 'результат[0]: поле \"lat\"').to.eql(56.859623);\r",
+							"    pm.expect(body[0].lon, 'результат[0]: поле \"lon\"').to.eql(35.911808);\r",
+							"    pm.expect(body[0].radius, 'результат[0]: поле \"radius\"').to.eql(8);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const main = async () => {\r",
+							"    const api = new API(pm);\r",
+							"\r",
+							"    let place = await api.addPlace(\r",
+							"        {\r",
+							"            \"lat\": 56.859623, \r",
+							"            \"lon\": 35.911808,\r",
+							"            \"radius\": 8\r",
+							"        }\r",
+							"    );\r",
+							"\r",
+							"    const user = await api.addUser(\r",
+							"    {\r",
+							"        name:\"Пётр\",\r",
+							"        email:\"pyotr84@m.ru\"\r",
+							"    });\r",
+							"\r",
+							"    const category = await api.addCategory(\r",
+							"    {\r",
+							"        name:\"Купание в реке\"\r",
+							"    });\r",
+							"\r",
+							"    const annotation = \"Купание загородом\";\r",
+							"    const description = \"Загородный пляж\";\r",
+							"    const eventDate = \"2023-06-10 13:30:00\";\r",
+							"    const location = {\r",
+							"        lat: 56.801504,\r",
+							"        lon: 36.055762,\r",
+							"    };\r",
+							"    const paid = false;\r",
+							"    const participantLimit = 100;\r",
+							"    const title = \"Отдых на реке\";\r",
+							"    const requestModeration = false;\r",
+							"    \r",
+							"    let event = await api.addEvent(user.id, \r",
+							"    {\r",
+							"        annotation: annotation,\r",
+							"        category: category.id,\r",
+							"        description: description,\r",
+							"        eventDate: eventDate,\r",
+							"        location: location,\r",
+							"        paid: paid,\r",
+							"        participantLimit: participantLimit,\r",
+							"        requestModeration: requestModeration,\r",
+							"        title: title\r",
+							"    });\r",
+							"\r",
+							"    event = await api.publishEvent(event.id);\r",
+							"    pm.collectionVariables.set(\"uid\", place.id)\r",
+							"};\r",
+							"\r",
+							"const interval = setInterval(() => {}, 1000);\r",
+							"\r",
+							"setTimeout(async () => \r",
+							"    {\r",
+							"        try {\r",
+							"            await main();\r",
+							"        } catch (e) {\r",
+							"            console.error(e);\r",
+							"        } finally {\r",
+							"            clearInterval(interval);\r",
+							"        }\r",
+							"    },  \r",
+							"    100 \r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/admin/places?ids={{uid}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"places"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "{{uid}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Поиск событий в радиусе локации по её id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const main = async () => {\r",
+							"    const api = new API(pm);\r",
+							"\r",
+							"    let place = await api.addPlace(\r",
+							"        {\r",
+							"            \"lat\": 55.755829,\r",
+							"            \"lon\": 37.617627,\r",
+							"            \"radius\": 25\r",
+							"        }\r",
+							"    );\r",
+							"\r",
+							"    const user = await api.addUser(\r",
+							"    {\r",
+							"        name:\"Иван\",\r",
+							"        email:\"ivan90@m.ru\"\r",
+							"    });\r",
+							"\r",
+							"    const category = await api.addCategory(\r",
+							"    {\r",
+							"        name:\"Катание на коньках\"\r",
+							"    });\r",
+							"\r",
+							"    const annotation = \"Катание на натуральном льду\";\r",
+							"    const description = \"Бесплатные часы катания для всех\";\r",
+							"    const eventDate = \"2023-07-20 14:20:00\";\r",
+							"    const location = {\r",
+							"        lat: 55.839587,\r",
+							"        lon: 37.638367,\r",
+							"    };\r",
+							"    const paid = false;\r",
+							"    const participantLimit = 50;\r",
+							"    const title = \"Активный отдых на льду\";\r",
+							"    const requestModeration = false;\r",
+							"    \r",
+							"    let event = await api.addEvent(user.id, \r",
+							"    {\r",
+							"        annotation: annotation,\r",
+							"        category: category.id,\r",
+							"        description: description,\r",
+							"        eventDate: eventDate,\r",
+							"        location: location,\r",
+							"        paid: paid,\r",
+							"        participantLimit: participantLimit,\r",
+							"        requestModeration: requestModeration,\r",
+							"        title: title\r",
+							"    });\r",
+							"\r",
+							"    event = await api.publishEvent(event.id);\r",
+							"    pm.collectionVariables.set(\"uid\", place.id)\r",
+							"};\r",
+							"\r",
+							"const interval = setInterval(() => {}, 1000);\r",
+							"\r",
+							"setTimeout(async () => \r",
+							"    {\r",
+							"        try {\r",
+							"            await main();\r",
+							"        } catch (e) {\r",
+							"            console.error(e);\r",
+							"        } finally {\r",
+							"            clearInterval(interval);\r",
+							"        }\r",
+							"    },  \r",
+							"    100 \r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+							"    pm.response.to.have.status(200);  \r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const body = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Ответ должен содержать поля id, annotation, description, eventDate, location, paid, participantLimit, requestModeration, title\", function () {\r",
+							"    pm.expect(body.length, 'Всего событий').to.eql(1);\r",
+							"    pm.expect(body.id).to.not.be.null;\r",
+							"    pm.expect(body[0].annotation, 'результат[0]: поле \"annotation\"').to.eql(\"Катание на натуральном льду\");\r",
+							"    pm.expect(body[0].description, 'результат[0]: поле \"description\"').to.eql(\"Бесплатные часы катания для всех\");\r",
+							"    pm.expect(body[0].eventDate, 'результат[0]: поле \"eventDate\"').to.eql(\"2023-07-20 14:20:00\");\r",
+							"    pm.expect(body[0].location.lat, 'результат[0]: поле \"lat\"').to.eql(55.839587);\r",
+							"    pm.expect(body[0].location.lon, 'результат[0]: поле \"lon\"').to.eql(37.638367);\r",
+							"    pm.expect(body[0].paid, 'результат[0]: поле \"paid\"').to.eql(false);\r",
+							"    pm.expect(body[0].participantLimit, 'результат[0]: поле \"participantLimit\"').to.eql(50);\r",
+							"    pm.expect(body[0].requestModeration, 'результат[0]: поле \"requestModeration\"').to.eql(false);\r",
+							"    pm.expect(body[0].title, 'результат[0]: поле \"title\"').to.eql(\"Активный отдых на льду\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/admin/places/:placeId/events",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"places",
+						":placeId",
+						"events"
+					],
+					"variable": [
+						{
+							"key": "placeId",
+							"value": "{{uid}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Поиск событий в радиусе локации по её id среди присутствующих лишь вне радиуса",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const main = async () => {\r",
+							"    const api = new API(pm);\r",
+							"\r",
+							"    let place = await api.addPlace(\r",
+							"        {\r",
+							"            \"lat\": 55.799797, \r",
+							"            \"lon\": 38.969624,\r",
+							"            \"radius\": 5\r",
+							"        }\r",
+							"    );\r",
+							"\r",
+							"    const user = await api.addUser(\r",
+							"    {\r",
+							"        name:\"Висилий\",\r",
+							"        email:\"vasily93@m.ru\"\r",
+							"    });\r",
+							"\r",
+							"        const category = await api.addCategory(\r",
+							"    {\r",
+							"        name:\"Выезд на природу\"\r",
+							"    });\r",
+							"\r",
+							"    const annotation = \"Шашлык на природе\";\r",
+							"    const description = \"Открытие места для приготовления шашлыка\";\r",
+							"    const eventDate = \"2023-12-05 12:30:00\";\r",
+							"    const location = {\r",
+							"        lat: 55.955635, \r",
+							"        lon: 38.564819,\r",
+							"    };\r",
+							"    const paid = false;\r",
+							"    const participantLimit = 50;\r",
+							"    const title = \"Отдых на природе\";\r",
+							"    const requestModeration = false;\r",
+							"    \r",
+							"    let event = await api.addEvent(user.id, \r",
+							"    {\r",
+							"        annotation: annotation,\r",
+							"        category: category.id,\r",
+							"        description: description,\r",
+							"        eventDate: eventDate,\r",
+							"        location: location,\r",
+							"        paid: paid,\r",
+							"        participantLimit: participantLimit,\r",
+							"        requestModeration: requestModeration,\r",
+							"        title: title\r",
+							"    });\r",
+							"\r",
+							"    event = await api.publishEvent(event.id);\r",
+							"    pm.collectionVariables.set(\"uid\", place.id)\r",
+							"};\r",
+							"\r",
+							"const interval = setInterval(() => {}, 1000);\r",
+							"\r",
+							"setTimeout(async () => \r",
+							"    {\r",
+							"        try {\r",
+							"            await main();\r",
+							"        } catch (e) {\r",
+							"            console.error(e);\r",
+							"        } finally {\r",
+							"            clearInterval(interval);\r",
+							"        }\r",
+							"    },  \r",
+							"    100 \r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+							"    pm.response.to.have.status(200);  \r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const body = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Ответ должен быть пустым\", function () {\r",
+							"    pm.expect(body.length, 'Всего событий').to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/admin/places/:placeId/events",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"places",
+						":placeId",
+						"events"
+					],
+					"variable": [
+						{
+							"key": "placeId",
+							"value": "{{uid}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"API = class {",
+					"    constructor(postman, verbose = false, baseUrl = \"http://localhost:8080\") {",
+					"        this.baseUrl = baseUrl;",
+					"        this.pm = postman;",
+					"        this._verbose = verbose;",
+					"    }",
+					"",
+					"    async addUser(user) {",
+					"        return this.post(\"/admin/users\", user);",
+					"    }",
+					"",
+					"    async addCategory(category) {",
+					"        return this.post(\"/admin/categories\", category);",
+					"",
+					"    }",
+					"",
+					"    async addEvent(userId, event) {",
+					"        return this.post(\"/users/\" + userId + \"/events\", event);",
+					"    }",
+					"    ",
+					"    async publishEvent(eventId) {",
+					"        return this.patch('/admin/events/' + eventId, {stateAction: \"PUBLISH_EVENT\"});",
+					"    }",
+					"",
+					"    async addPlace(place) {",
+					"        return this.post('/admin/places/', place);",
+					"    }",
+					"",
+					"    async post(path, body) {",
+					"        return this.sendRequest(\"POST\", path, body);",
+					"    }",
+					"    ",
+					"    async get(path, body = null) {",
+					"        return this.sendRequest(\"GET\", path, body);",
+					"    }",
+					"",
+					"    async patch(path, body = null) {",
+					"        return this.sendRequest(\"PATCH\", path, body);",
+					"    }",
+					"",
+					"    async sendRequest(method, path, body = null) {",
+					"        return new Promise((resolve, reject) => {",
+					"",
+					"            const request = {",
+					"                url: this.baseUrl + path,",
+					"                method: method,",
+					"                body: body == null ? \"\" : JSON.stringify(body),",
+					"                header: { \"Content-Type\": \"application/json\" },",
+					"            };",
+					"",
+					"            try {",
+					"                this.pm.sendRequest(request, (error, response) => {",
+					"                    if(error || (response.code >= 400 && response.code <= 599)) {",
+					"                        let err = error ? error : JSON.stringify(response.json());",
+					"                        console.error(\"При выполнении запроса к серверу возникла ошика.\\n\", err,",
+					"                             \"\\nДля отладки проблемы повторите такой же запрос к вашей программе \" + ",
+					"                             \"на локальном компьютере. Данные запроса:\\n\", JSON.stringify(request));",
+					"",
+					"                        reject(new Error( \"Ошибка при выполнении запроса: \" + err));",
+					"                    }",
+					"                    resolve(response.json());",
+					"                });",
+					"            } catch(err) {",
+					"                return Promise.reject(err);",
+					"            }",
+					"        });",
+					"    }   ",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "default"
+		},
+		{
+			"key": "uid",
+			"value": ""
+		}
+	]
+}
