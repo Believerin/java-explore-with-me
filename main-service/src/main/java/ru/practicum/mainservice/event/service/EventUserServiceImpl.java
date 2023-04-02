@@ -15,7 +15,6 @@ import ru.practicum.mainservice.event.dto.EventShortDto;
 import ru.practicum.mainservice.event.dto.NewEventDto;
 import ru.practicum.mainservice.event.model.Event;
 import ru.practicum.mainservice.event.repository.EventUserRepository;
-import ru.practicum.mainservice.event.repository.LocationRepository;
 import ru.practicum.mainservice.event.status.State;
 import ru.practicum.mainservice.exception.NoAccessException;
 import ru.practicum.mainservice.exception.NoSuchBodyException;
@@ -46,7 +45,6 @@ public class EventUserServiceImpl implements EventUserService {
 
     private final EventUserRepository eventUserRepository;
     private final CategoryRepository categoryRepository;
-    private final LocationRepository locationRepository;
     private final RequestUserRepository requestUserRepository;
     private final UserRepository userRepository;
     private final EventMapper eventMapper;
